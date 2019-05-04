@@ -1,0 +1,14 @@
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\bin\Debug\kursowa.exe.config
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\bin\Debug\kursowa.exe
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\bin\Debug\kursowa.pdb
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.csprojResolveAssemblyReference.cache
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\MainWindow.g.cs
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\App.g.cs
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa_MarkupCompile.cache
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa_MarkupCompile.lref
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\MainWindow.baml
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.g.resources
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.Properties.Resources.resources
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.csproj.GenerateResource.Cache
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.exe
+c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.pdb
