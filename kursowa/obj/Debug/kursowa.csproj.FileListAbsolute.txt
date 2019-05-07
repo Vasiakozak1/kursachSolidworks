@@ -12,3 +12,18 @@ c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\k
 c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.csproj.GenerateResource.Cache
 c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.exe
 c:\users\vasyl\documents\visual studio 2015\Projects\kursowa\kursowa\obj\Debug\kursowa.pdb
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csprojAssemblyReference.cache
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\MainWindow.g.cs
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\App.g.cs
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa_MarkupCompile.cache
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa_MarkupCompile.lref
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.exe
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.pdb
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\kursowa.exe.config
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\kursowa.exe
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\kursowa.pdb
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\MainWindow.baml
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.g.resources
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.Properties.Resources.resources
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csproj.GenerateResource.cache
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csproj.CoreCompileInputs.cache
