@@ -31,5 +31,15 @@ namespace kursowa
         {
             partService.MakeBolid();
         }
+
+        private void Button1_Click(object sender, RoutedEventArgs e)
+        {
+            partService.ForTest();
+        }
+
+        private void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            partService.MakeWheel();
+        }
     }
 }
