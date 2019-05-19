@@ -1,0 +1,12 @@
+{
+  "wheelRadius": 80.0,
+  "wheelWidth": 80.0,
+  "spoilerLength": 500.0,
+  "spoilerWidth": 70.0,
+  "spoilerThickness": 30.0,
+  "spoilerVerticalPosition": 200.0,
+  "frontSpoilerLength": 400.0,
+  "frontSpoilerThickness": 10.0,
+  "frontSpoilerVerticalPosition": 15.0,
+  "frontSpolierHorizontalPosition": 150.0
+}

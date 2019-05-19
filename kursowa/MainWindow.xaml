@@ -5,10 +5,61 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:kursowa"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="642" Width="821">
     <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="199,140,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <Button x:Name="button1" Content="Test" HorizontalAlignment="Left" Margin="240,255,0,0" VerticalAlignment="Top" Width="75" Click="Button1_Click"/>
-        <Button x:Name="button2" Content="Побудувати колесо" HorizontalAlignment="Left" Margin="199,188,0,0" VerticalAlignment="Top" Width="166" Height="30" Click="Button2_Click"/>
+        <Grid Margin="0,0,415,161">
+
+        </Grid>
+        <Grid Margin="403,0,0,101">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label>Радіус колеса</Label>
+            <TextBox Grid.Column="1" Name="wheelRadius"></TextBox>
+
+            <Label Grid.Row="1">Ширина колеса</Label>
+            <TextBox Grid.Column="1" Grid.Row="1" Name="wheelWidth"></TextBox>
+
+            <Label Grid.Row="2">Довжина спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="2" Name="spoilerLength"></TextBox>
+
+            <Label Grid.Row="3">Ширина спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="3" Name="spoilerWidth"></TextBox>
+
+            <Label Grid.Row="4">Товщина спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="4" Name="spoilerThickness"></TextBox>
+
+            <Label Grid.Row="5">Положення спойлера по вертикалі</Label>
+            <TextBox Grid.Column="1" Grid.Row="5" Name="spolierVerticalPosition"></TextBox>
+
+            <Label Grid.Row="6">Довжина переднього спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="6" Name="frontSpoilerLength"></TextBox>
+            <Label Grid.Row="7">Товщина переднього спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="7" Name="frontSpolierThickness"></TextBox>
+            <Label Grid.Row="8">Вертикальне положення переднього спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="8" Name="frontSpoilerVerticalPosition"></TextBox>
+            <Label Grid.Row="9">Горизонтальне положення переднього спойлера</Label>
+            <TextBox Grid.Column="1" Grid.Row="9" Name="frontSpolierHorizontalPosition"></TextBox>
+        </Grid>
+        <Button x:Name="button" Content="Побудувати головну частину
+                " HorizontalAlignment="Left" Margin="446,507,0,0" VerticalAlignment="Top" Width="185" Click="button_Click" Height="30"/>
+        <Button x:Name="button1" Content="Test" HorizontalAlignment="Left" Margin="123,542,0,0" VerticalAlignment="Top" Width="75" Click="Button1_Click"/>
+        <Button x:Name="button2" Content="Побудувати колесо" HorizontalAlignment="Left" Margin="32,507,0,0" VerticalAlignment="Top" Width="166" Height="30" Click="Button2_Click"/>
     </Grid>
 </Window>

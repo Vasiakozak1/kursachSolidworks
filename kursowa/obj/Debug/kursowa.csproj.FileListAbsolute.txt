@@ -27,3 +27,8 @@ C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.
 C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.Properties.Resources.resources
 C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csproj.GenerateResource.cache
 C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csproj.CoreCompileInputs.cache
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\parameters.json
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\Newtonsoft.Json.dll
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\bin\Debug\Newtonsoft.Json.xml
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa_Content.g.cs
+C:\Users\jungl\Documents\MyProjects\kursachSolidworks\kursowa\obj\Debug\kursowa.csproj.CopyComplete
