@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace kursowa
 {
@@ -18,13 +20,14 @@ namespace kursowa
             string parametersJson = File.ReadAllText("parameters.json");
             assemblyParameters = JsonConvert.DeserializeObject<AssemblyParameters>(parametersJson);
             initInputs();
+            //refreshAssemblyImage();
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-
-            partService.MakeBolid();
             saveParametersToFile();
+            partService.MakeBolid(assemblyParameters);
+            
         }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
@@ -34,7 +37,8 @@ namespace kursowa
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-            partService.MakeWheel();
+            saveParametersToFile();
+            partService.MakeWheel(assemblyParameters);
         }
 
         private void initInputs()
@@ -46,7 +50,7 @@ namespace kursowa
             spoilerThickness.Text = assemblyParameters.SpoilerThickness.ToString();
             spolierVerticalPosition.Text = assemblyParameters.SpoilerVerticalPosition.ToString();
             frontSpoilerLength.Text = assemblyParameters.FrontSpoilerLength.ToString();
-            frontSpolierThickness.Text = assemblyParameters.FrontSpoilerLength.ToString();
+            frontSpolierThickness.Text = assemblyParameters.FrontSpoilerThickness.ToString();
             frontSpoilerVerticalPosition.Text = assemblyParameters.FrontSpoilerVerticalPosition.ToString();
             frontSpolierHorizontalPosition.Text = assemblyParameters.FrontSpolierHorizontalPosition.ToString();
         }
@@ -68,6 +72,17 @@ namespace kursowa
             assemblyParameters.FrontSpolierHorizontalPosition = double.Parse(frontSpolierHorizontalPosition.Text);
             string parametersJson = JsonConvert.SerializeObject(assemblyParameters, Formatting.Indented);
             File.WriteAllText("parameters.json", parametersJson);
+        }
+
+        private void refreshAssemblyImage()
+        {
+            assemblyImage.Source = new BitmapImage(new System.Uri(partService.AssemblyImagePath));
+        }
+
+        private void Button1_Click_1(object sender, RoutedEventArgs e)
+        {
+            partService.BuildBolide();
+            refreshAssemblyImage();
         }
     }
 }

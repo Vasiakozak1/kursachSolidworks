@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Windows;
 using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swcommands;
 using SolidWorks.Interop.swconst;
 
 namespace kursowa
@@ -20,6 +16,8 @@ namespace kursowa
         private double heightOfMainPart;
         private double lengthOfMainPart;
         ModelDoc2 swDoc;
+
+        public string AssemblyImagePath { get; private set; }
         private PartService()
         {
             initSolidworks();
@@ -35,7 +33,7 @@ namespace kursowa
             return instance;
         }
 
-        public void MakeBolid()
+        public void MakeBolid(AssemblyParameters parameters)
         {
             #region parameters
             lengthOfMainPart = 800 / 100.0;
@@ -113,23 +111,7 @@ namespace kursowa
             Part.SketchManager.CreateLine(-7.4, -widthOfMainPart / 2.0, 0, -lengthOfMainPart, -widthOfMainPart / 2.0, 0);
             Part.SketchManager.Create3PointArc(-7.017346, -widthOfMainPart / 2.0, 0, -7.4, -1.273082, 0, -7.17822, -1.06516, 0);
             Part.SetPickMode();
-            Part.ClearSelection2(true);
-
-            //Mirror arcs
-            //Part.SketchManager.CreateLine(-8.0, 0.0, 0.0, 0.0, 0.007679, 0);
-            //Part.SetPickMode();
-            //Part.ClearSelection2(true);
-            //Part.Extension.SelectByID2("Line1", "SKETCHSEGMENT", -7.99267683991916, 0.138805887620156, 1.19032121890109, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Line2", "SKETCHSEGMENT", -7.59539420107798, 0.219650124111973, 1.95852827802445, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Line3", "SKETCHSEGMENT", -7.42479493618359, 0.223148596970411, 1.7838255099833, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", -7.154460157051, 0.216445664243084, 1.30903823320347, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Line4", "SKETCHSEGMENT", -6.89335930010243, 2.9561552520363E-04, 0.754778201532673, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Line6", "SKETCHSEGMENT", -7.43467953799967, 0.165906571087912, 0.871988920136775, true, 0, null, 0);
-            //boolstatus = Part.Extension.SelectByID2("Arc2", "SKETCHSEGMENT", -7.18099306278382, 0.199199844738935, 1.06625012508156, true, 0, null, 0);
-            ////Part.SketchMirror();
-            //Part.Extension.SelectByID2("Line7", "SKETCHSEGMENT", -7.53505894461789, 0.104497374176439, 1.54634204907547E-02, true, 0, null, 0);
-            //Part.SetPickMode();
-            //Part.ClearSelection2(true);
+            Part.ClearSelection2(true);          
 
             //Wing
             Part.SketchManager.CreateLine(x1ForArc1, y1ForArc1, z1ForArc1, x1ForArc1 + 107.68705029 / 100.0, y1ForArc1, z1ForArc1);
@@ -257,10 +239,7 @@ namespace kursowa
             Part.SketchManager.CreateLine(-8, -0.75, 0, -8, 0.75, 0);
        
             Thread.Sleep(100);
-          //  ForTest();
             Part.SetPickMode();
-            //Part.ClearSelection2(true);
-            //Part.Extension.SelectByID2("Sketch40", "SKETCH", -6.99006116553235, 1.06375414014607, 2.05137105845649, false, 4, null, 0);
             Part.SelectionManager.EnableContourSelection = true;
             Part.Extension.SelectByID2("Sketch2", "SKETCHREGION", -3.9841093791155, 1.92165359018481E-02, -1.11273181579067, true, 4, null, 0);
 
@@ -271,9 +250,35 @@ namespace kursowa
             Part.SelectionManager.EnableContourSelection = false;
             frontLoft();
             driverSit();
-            backWing();
-            frontWing();
+            backWing(parameters);
+            frontWing(parameters);
             partEnhancing();
+            bool saved = swDoc.SaveAs("C:\\Users\\jungl\\Documents\\bilide2\\mainPart.sldprt");
+            if (!saved)
+            {
+                MessageBox.Show("Solidworks не зміг зберегти корпус боліда. Потрібно перезапустити Solidworks");
+            }
+        }
+
+        public void BuildBolide()
+        {
+            createAssembly();
+            loadComponentsAndMergeThem();
+            saveAssembly();
+            runMacrosForRotatingAndSaveAsImage();
+        }
+
+        private void saveAssembly()
+        {
+            swDoc.SaveAs("C:\\Users\\jungl\\Documents\\bilide2\\bolideAssembly.sldasm");
+        }
+
+        private void runMacrosForRotatingAndSaveAsImage()
+        {
+            bool result = this.sldApp.RunMacro("C:\\Users\\jungl\\Documents\\macrosesForBolide\\macrosesForAssembly\\zoomMacro.swp", "zoomMacro1", "main");
+            string randomImageGuid = Guid.NewGuid().ToString();
+            AssemblyImagePath = $"C:\\Users\\jungl\\Documents\\bilide2\\bolideAssembly_{randomImageGuid}.jpg";
+            swDoc.SaveAs(AssemblyImagePath);
         }
 
         private void partEnhancing()
@@ -301,19 +306,19 @@ namespace kursowa
             Part.Extension.SelectByID2("", "FACE", -4.63317708814719, 1.24926405903166, -0.14330009478595, false, 0, null, 0);
             Part.SketchManager.InsertSketch(true);
             Part.ClearSelection2(true);
-            Part.SketchManager.CreateLine(0.371344, 0.84, 0, 0.371344, 1.379237, 0);
-            Part.SketchManager.CreateLine(0.371344, 1.379237, 0, -0.380286, 1.379237, 0);
-            Part.SketchManager.CreateLine(-0.380286, 1.379237, 0, -0.380286, 0.84, 0);
-            Part.SketchManager.CreateLine(-0.380286, 0.84, 0, 0.371344, 0.84, 0);
-            Part.SketchManager.CreateLine(0.371344, 0.84, 0, 0.37193, 0.839418, 0);
+            //Part.SketchManager.CreateLine(0.371344, 0.84, 0, 0.371344, 1.379237, 0);
+            //Part.SketchManager.CreateLine(0.371344, 1.379237, 0, -0.380286, 1.379237, 0);
+            //Part.SketchManager.CreateLine(-0.380286, 1.379237, 0, -0.380286, 0.84, 0);
+            //Part.SketchManager.CreateLine(-0.380286, 0.84, 0, 0.371344, 0.84, 0);
+            //Part.SketchManager.CreateLine(0.371344, 0.84, 0, 0.37193, 0.839418, 0);
 
-            Part.Extension.SelectByID2("Sketch16", "SKETCHREGION", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
-            Part.ClearSelection2(true);
-            Part.Extension.SelectByID2("Line7", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
-            Part.Extension.SelectByID2("Sketch16", "SKETCH", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
-            Part.SelectionManager.EnableContourSelection = true;
-            Part.Extension.SelectByID2("Sketch16", "SKETCHREGION", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
-            Part.FeatureManager.FeatureCut3(true, false, false, 0, 0, 0.4, 0.01, false, false, false, false, 1.74532925199433E-02, 1.74532925199433E-02, false, false, false, false, false, true, true, true, true, false, 0, 0, false);
+            //Part.Extension.SelectByID2("Sketch16", "SKETCHREGION", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
+            //Part.ClearSelection2(true);
+            //Part.Extension.SelectByID2("Line7", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+            //Part.Extension.SelectByID2("Sketch16", "SKETCH", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
+            //Part.SelectionManager.EnableContourSelection = true;
+            //Part.Extension.SelectByID2("Sketch16", "SKETCHREGION", -5.51604502564569, 1.19197485065642, -0.126607830934105, true, 4, null, 0);
+            //Part.FeatureManager.FeatureCut3(true, false, false, 0, 0, 0.4, 0.01, false, false, false, false, 1.74532925199433E-02, 1.74532925199433E-02, false, false, false, false, false, true, true, true, true, false, 0, 0, false);
 
             //Part.Extension.SelectByID2("Sketch15", "SKETCH", -5.72262221451914, 1.24042065615908, -0.196461220419769, false, 4, null, 0);
             //Part.SelectionManager.EnableContourSelection = true;
@@ -329,28 +334,46 @@ namespace kursowa
             Part.FeatureManager.FeatureFillet3(195, 0.05, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
             Part.Extension.SelectByID2("", "EDGE", -1.77920169917604, 1.17432679479634E-03, -0.576110982775106, false, 1, null, 0);
             Part.FeatureManager.FeatureFillet3(195, 0.05, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
-
-            createAssembly();
-            loadComponentsAndMergeThem();
+            Part.ClearSelection2(true);
+            
         }
 
         private void loadComponentsAndMergeThem()
         {
-            var Part = swDoc as AssemblyDoc;
-            Part.AddComponent("qaz", 4.63740979769643, 5.48276643779863, 8.53843062725727);
-            Part.AddComponent("wheel", 1.39531012250518, 4.40312976879068, 10.8170748953016);
-            Part.AddComponent("wheel", 1.35574414456642, 4.40593699540477, 6.187419028048);
-            Part.AddComponent("wheel", 8.61716884937414, 4.78001097240485, 6.3049939495686);
-            Part.AddComponent("wheel", 8.61145906332604, 4.37909759429749, 10.8762716813799);
+            var assembly = swDoc as AssemblyDoc;
+            var Part = swDoc;
+            assembly.AddComponent("mainPart", 4.63740979769643, 5.48276643779863, 8.53843062725727);
+            assembly.AddComponent("wheel", 1.39531012250518, 4.40312976879068, 10.8170748953016);
+            assembly.AddComponent("wheel", 1.35574414456642, 4.40593699540477, 6.187419028048);
+            assembly.AddComponent("wheel", 8.61716884937414, 4.37909759429749, 6.3049939495686);
+            assembly.AddComponent("wheel", 8.61145906332604, 4.37909759429749, 10.8762716813799);
+            Part.Extension.SelectByID2("", "FACE", 1.03744547233305, 4.87337996399503, 10.4170748953016, true, 1, null, 0);
+            Part.Extension.SelectByID2("", "FACE", 1.33720554632641, 4.40552213930781, 10.5384306272571, true, 1, null, 0);
+            int errorStatus;
+            assembly.AddMate5(0, 1, false, 0.121355731955671, 0.01, 0.01, 0.01, 0.01, 0, 0.5235987755983, 0.5235987755983, false, false, 0, out errorStatus);
+            Part.ClearSelection2(true);
+            Part.Extension.SelectByID2("", "FACE", 8.06352257475984, 4.52924101978067, 10.47627168138, true, 1, null, 0);
+            Part.Extension.SelectByID2("", "FACE", 8.55647729982622, 4.52290271112781, 10.4651535890574, true, 1, null, 0);
+            assembly.AddMate5(0, 1, false, 1.11180923226293E-02, 0.01, 0.01, 0.01, 0.01, 0, 0.5235987755983, 0.5235987755983, false, false, 0, out errorStatus);
+            Part.ClearSelection2(true);
+            Part.Extension.SelectByID2("", "FACE", 1.21559727114621, 4.56165680374116, 5.78741902804808, true, 1, null, 0);
+            Part.Extension.SelectByID2("", "FACE", 1.32503054831747, 4.54327155737037, 6.53843062725736, true, 1, null, 0);
+            assembly.AddMate5(0, 1, false, 0.751011599209271, 0.01, 0.01, 0.01, 0.01, 0, 0.5235987755983, 0.5235987755983, false, false, 0, out errorStatus);
+            Part.ClearSelection2(true);
+            Part.Extension.SelectByID2("", "FACE", 8.36387207168171, 4.55641478854211, 5.90499394956862, true, 1, null, 0);
+            Part.Extension.SelectByID2("", "FACE", 8.78177799185652, 4.47748868998778, 6.60707358905734, true, 1, null, 0);
+            assembly.AddMate5(0, 1, false, 0.702079639488669, 0.01, 0.01, 0.01, 0.01, 0, 0.5235987755983, 0.5235987755983, false, false, 0, out errorStatus);
         }
 
-        public void MakeWheel()
+        public void MakeWheel(AssemblyParameters parameters)
         {
             createPart();
             var Part = swDoc;
             var skethManager = Part.SketchManager;
-            double wheelRadius = 80 / 100.0;
-            double wheelWidth = 80 / 100.0;
+            //double wheelRadius = 80 / 100.0;
+            //double wheelWidth = 80 / 100.0;
+            double wheelRadius = parameters.WheelRadius / 100.0;
+            double wheelWidth = parameters.WheelWidth / 100.0;
             double wheelInnerCircleRadiusCooficient = 80.0 / 45.0;
             double wheelOuterInnerCIrcleRadiusCooficient = 80.0 / 55.0;
             double innerCircleRadius = wheelRadius / wheelInnerCircleRadiusCooficient;
@@ -373,6 +396,11 @@ namespace kursowa
             Part.ClearSelection2(true);
             Part.Extension.SelectByID2("", "FACE", 0, 0, wheelWidth / 2.0, false, 0, null, 0);
             Part.FeatureManager.FeatureFillet3(195, 0.1, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
+            bool saved = Part.SaveAs("C:\\Users\\jungl\\Documents\\bilide2\\wheel.sldprt");
+            if (!saved)
+            {
+                MessageBox.Show("Solidworks не зміг зберегти колесо");
+            }
         }
 
         private void driverSit()
@@ -432,10 +460,11 @@ namespace kursowa
             Part.Extension.SelectByID2("Sketch10", "SKETCH", 5.42524031643943E-02, 1.13591583025177, 0, true, 1, null, 0);
             Part.FeatureManager.InsertProtrusionBlend(false, true, false, 1, 0, 0, 1, 1, true, true, false, 0, 0, 0, true, true, true);
         }
-        private void backWing()
+        private void backWing(AssemblyParameters parameters)
         {
             var Part = swDoc;
-            double heightOfSpoiler = 198.0;
+            //double heightOfSpoiler = 198.0;
+            double heightOfSpoiler = parameters.SpoilerVerticalPosition;
             Part.ClearSelection2(true);
             Part.InsertSketch();
             // Line for direction
@@ -458,9 +487,13 @@ namespace kursowa
             Part.ClearSelection2(true);
 
             Part.InsertSketch();
-            double lengthOfSpoiler = 500;
-            double widthOfSpoiler = 70;
-            double heightOfSpoilerWing = 30 / 100.0;
+            //double lengthOfSpoiler = 500;
+            //double widthOfSpoiler = 70;
+            //double heightOfSpoilerWing = 30 / 100.0;
+            double lengthOfSpoiler = parameters.SpoilerLength;
+            double widthOfSpoiler = parameters.SpoilerWidth;
+            double heightOfSpoilerWing = parameters.SpoilerThickness / 100.0;
+
             double xCooficient = 198.0 / 107.34;
             double yCooficient = 198.0 / 166.38;
             
@@ -489,17 +522,6 @@ namespace kursowa
         public void ForTest()
         {
             var Part = swDoc;
-            // Part.SetPickMode();
-            //Part.ClearSelection2(true);
-            //Part.Extension.SelectByID2("Sketch40", "SKETCH", -6.99006116553235, 1.06375414014607, 2.05137105845649, false, 4, null, 0);
-            //Part.SelectionManager.EnableContourSelection = true;
-            //Part.Extension.SelectByID2("Sketch2", "SKETCHREGION", -3.9841093791155, 1.92165359018481E-02, -1.11273181579067, true, 4, null, 0);
-
-            //Part.Extension.SelectByID2("Sketch2", "SKETCHREGION", -6.90010975425287, 1.05342333640838, 1.97602960993305, true, 0, null, 0);
-            //Part.Extension.SelectByID2("Sketch2", "SKETCHREGION", -6.21591444832203, 2.1019999157831, -0.191076915736342, true, 0, null, 0);
-            //Part.Extension.SelectByID2("Sketch2", "SKETCHREGION", -4.3896245678695, -0.268919542014907, 1.3356196563234, true, 0, null, 0);
-            //Part.FeatureManager.FeatureExtrusion2(true, false, true, 0, 0, 0.4, 0.4, false, false, false, false, 1.74532925199433E-02, 1.74532925199433E-02, false, false, false, false, true, true, true, 0, 0, false);
-            //Part.SelectionManager.EnableContourSelection = false;
             createAssembly();
             loadComponentsAndMergeThem();
 
@@ -526,39 +548,34 @@ namespace kursowa
             Part.SketchManager.CreateLine(0.75, 0.8, 0, 0.75, 0, 0);
             Part.SketchManager.CreateLine(0.75, 0, 0, -0.75, 0, 0);
             Part.SketchManager.CreateLine(-0.75, 0, 0, -0.75, 0.8, 0);
-            //Part.SetPickMode();
             Part.ClearSelection2(true);
-            //Part.SketchManager.InsertSketch(false);
-            //Part.Extension.SelectByID2("Sketch3", "SKETCH", -2.80409477329613E-02, 0.408147627572497, 0, true, 0, null, 0);
-            //Part.ClearSelection2(true);
-            //Part.Extension.SelectByID2("Sketch4", "SKETCH", -8, 0.8, -0.75, false, 1, null, 0);
-            //Part.Extension.SelectByID2("Sketch3", "SKETCH", -2.80409477329613E-02, 0.408147627572497, 0, true, 1, null, 0);
-            //Part.DeSelectByID("Sketch3", "SKETCH", -2.80409477329613E-02, 0.408147627572497, 0);
-            //Part.Extension.SelectByID2("Sketch3", "SKETCH", -2.80409477329613E-02, 0.408147627572497, 0, true, 1, null, 0);
-            //Part.FeatureManager.InsertProtrusionBlend(false, true, false, 1, 0, 0, 1, 1, true, true, false, 0, 0, 0, true, true, true);
-            bool boolstatus;
-            boolstatus = Part.Extension.SelectByID2("Sketch3", "SKETCH", -0.253844899360843, 0.408147627572497, 0, true, 0, null, 0);
-            boolstatus = Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.422763854958134, 0, 0, true, 0, null, 0);
-            boolstatus = Part.DeSelectByID("Sketch4", "SKETCH", -0.75, 0.295114728382344, 0);
-            boolstatus = Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.75, 0.295114728382344, 0, true, 0, null, 0);
-            boolstatus = Part.DeSelectByID("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0);
-            boolstatus = Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0, true, 0, null, 0);
+
+            Part.Extension.SelectByID2("Sketch3", "SKETCH", -0.253844899360843, 0.408147627572497, 0, true, 0, null, 0);
+            Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.422763854958134, 0, 0, true, 0, null, 0);
+            Part.DeSelectByID("Sketch4", "SKETCH", -0.75, 0.295114728382344, 0);
+            Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.75, 0.295114728382344, 0, true, 0, null, 0);
+            Part.DeSelectByID("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0);
+            Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0, true, 0, null, 0);
             Part.ClearSelection2(true);
-            boolstatus = Part.Extension.SelectByID2("Sketch3", "SKETCH", -0.253844899360843, 0.408147627572497, 0, false, 1, null, 0);
-            boolstatus = Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0, true, 1, null, 0);
+            Part.Extension.SelectByID2("Sketch3", "SKETCH", -0.253844899360843, 0.408147627572497, 0, false, 1, null, 0);
+            Part.Extension.SelectByID2("Sketch4", "SKETCH", -0.548309646518064, 0.8, 0, true, 1, null, 0);
             Part.FeatureManager.InsertProtrusionBlend(false, true, false, 1, 0, 0, 1, 1, true, true, false, 0, 0, 0, true, true, true);
             Part.Extension.SelectByID2("", "FACE", -965.89 / 100.0, 31.67 / 100.0, -7.12 / 100.0, false, 0, null, 0);
             Part.FeatureManager.FeatureFillet3(195, 0.07, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
 
         }
 
-        private void frontWing()
+        private void frontWing(AssemblyParameters parameters)
         {
             var Part = swDoc;
-            double horizontalPosition = 150 / 100.0;
-            double verticalPosition = 15.0 / 100.0;
-            double wingLength = 400.0 / 100.0;
-            double wingThickness = 10.0 / 100.0;
+            //double horizontalPosition = 150 / 100.0;
+            //double verticalPosition = 15.0 / 100.0;
+            //double wingLength = 400.0 / 100.0;
+            //double wingThickness = 10.0 / 100.0;
+            double horizontalPosition = parameters.FrontSpolierHorizontalPosition / 100.0;
+            double verticalPosition = parameters.FrontSpoilerVerticalPosition / 100.0;
+            double wingLength = parameters.FrontSpoilerLength / 100.0;
+            double wingThickness = parameters.FrontSpoilerThickness / 100.0;
 
             double minCoorx = 800.0 / 100.0;
             double maxCoorx = 1000.0 / 100.0;
@@ -581,10 +598,7 @@ namespace kursowa
             Part.SketchManager.CreateLine(x2ForWing, y2ForWing, 0, x2ForWing, -y2ForWing, 0);
             Part.SketchManager.CreateLine(x2ForWing, -y2ForWing, 0, x1ForWing, -y1ForWing, 0);
             Part.SketchManager.CreateLine(x1ForWing, -y1ForWing, 0, x1ForWing, y1ForWing, 0);
-            //Part.SketchManager.CreateLine(9.190258, 1.862041, 0, 9.576248, 2.01019, 0);
-            //Part.SketchManager.CreateLine(9.576248, 2.01019, 0, 9.576248, -2.08774, 0);
-            //Part.SketchManager.CreateLine(9.576248, -2.08774, 0, 9.190258, -1.906886, 0);
-            //Part.SketchManager.CreateLine(9.190258, -1.906886, 0, 9.190258, 1.862041, 0);
+     
             Part.SetPickMode();
             Part.FeatureManager.FeatureExtrusion2(true, false, false, 0, 0, wingThickness, 0.01, false, false, false, false, 1.74532925199433E-02, 1.74532925199433E-02, false, false, false, false, true, true, true, 0, 0, false);
             Part.SelectionManager.EnableContourSelection = false;
@@ -603,11 +617,6 @@ namespace kursowa
             Part.FeatureManager.FeatureFillet3(195, 0.04, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
             Part.Extension.SelectByID2("", "FACE", xForSelecting, y2ForSelecting, z2ForSelecting, false, 0, null, 0);
             Part.FeatureManager.FeatureFillet3(195, 0.04, 0.01, 0, 0, 0, 0, (0), (0), (0), (0), (0), (0), (0));
-        }
-
-        private void rotateCamera1()
-        {
-
         }
 
         private void initSolidworks()
